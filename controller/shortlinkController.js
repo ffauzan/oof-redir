@@ -70,7 +70,8 @@ async function addShortlink(req, res) {
 
 
 async function editShortLink(req, res) {
-    const { shortUrl, longUrl, username } = req.body
+    const { longUrl, username } = req.body
+    const shortUrl = req.params.shortUrl
 
     // Basic Checking
     if (shortUrl && longUrl) {
@@ -114,6 +115,11 @@ async function editShortLink(req, res) {
                 })
             })
         }
+    } else {
+        return res.json({
+            status: 0,
+            message: 'Shortlink not found'
+        })
     }
 }
 
