@@ -155,9 +155,30 @@ async function deleteShortlink(req, res) {
     })
 }
 
+
+async function getAllShortlinks(req, res) {
+    const username = req.body.username
+
+    Shortlink.find({owner: username})
+    .then((shortlinks) => {
+        return res.json({
+            status: 1,
+            message: '',
+            data: shortlinks
+        })
+    })
+    .catch((err) => {
+        return res.json({
+            status: 0,
+            message: err.message
+        })
+    })
+}
+
 module.exports = {
     addShortlink,
     shortlinkRedir,
     editShortLink,
     deleteShortlink,
+    getAllShortlinks
 }
