@@ -80,7 +80,6 @@ async function editShortLink(req, res) {
             Shortlink.findOne({shortUrl: shortUrl}, 'shortUrl longUrl owner updated')
             .then((shortlink) => {
                 if (shortlink) {
-                    // console.log('already exist')
 
                     // If shortlink belong to this user
                     if (shortlink.owner === username) {
@@ -118,23 +117,47 @@ async function editShortLink(req, res) {
     }
 }
 
-// async function addShortlink(shortUrl, longUrl) {
-//     const newShortLink = new Shortlink({
-//         shortUrl: shortUrl,
-//         longUrl: longUrl
-//     }) 
 
-//     try {
-//         await newShortLink.save()
-//         console.log(newShortLink)
-//     } catch (err) {
-//         console.log(err.message)
-//     }
-// }
+async function deleteShortlink(req, res) {
+    const username = req.body.username
+    const shortUrl = req.params.shortUrl
 
+    if (!shortUrl) {
+        return res.json({
+            status: 0,
+            message: 'What should I delete?'
+        })
+    }
+
+    Shortlink.deleteOne({
+        shortUrl: shortUrl,
+        owner: username
+    })
+    .then((isDeleted) => {
+        if (isDeleted.deletedCount > 0) {
+            return res.json({
+                status: 1,
+                message: `${shortUrl} deleted`
+            })
+        } else {
+            return res.json({
+                status: 0,
+                message: 'it is not yours or it does not exist'
+            })
+        }
+    })
+    .catch(err => {
+        console.log('an error')
+        return res.json({
+            status: 0,
+            message: err.message
+        })
+    })
+}
 
 module.exports = {
     addShortlink,
     shortlinkRedir,
     editShortLink,
+    deleteShortlink,
 }
