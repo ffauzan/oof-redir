@@ -24,7 +24,7 @@ async function addShortlink(req, res) {
         // Length check
         if (shortUrl.length > 2) {
             // Check if shortlink already used
-            Shortlink.findOne({shortUrl: shortUrl}, 'shortUrl longUrl')
+            Shortlink.findOne({shortUrl: shortUrl}, 'shortUrl longUrl updated')
             .then((shortlink) => {
                 if (shortlink) {
                     console.log('already exist')
@@ -72,7 +72,50 @@ async function addShortlink(req, res) {
 async function editShortLink(req, res) {
     const { shortUrl, longUrl, username } = req.body
 
-    
+    // Basic Checking
+    if (shortUrl && longUrl) {
+        // Length check
+        if (shortUrl.length > 2) {
+            // Check if shortlink is exist
+            Shortlink.findOne({shortUrl: shortUrl}, 'shortUrl longUrl owner updated')
+            .then((shortlink) => {
+                if (shortlink) {
+                    // console.log('already exist')
+
+                    // If shortlink belong to this user
+                    if (shortlink.owner === username) {
+                        shortlink.longUrl = longUrl
+                        shortlink.updated = Date.now()
+                        shortlink.save()
+
+                        return res.json({
+                            status: 1,
+                            message: '',
+                            data: shortlink
+                        })
+                        
+                    } else {
+                        return res.json({
+                            status: 0,
+                            message: 'Shortlink is not yours'
+                        })
+                    }
+                } else {
+                    return res.json({
+                        status: 0,
+                        message: 'Shortlink not found'
+                    })
+                }
+            })
+            .catch(err => {
+                console.log('an error')
+                return res.json({
+                    status: 0,
+                    message: err.message
+                })
+            })
+        }
+    }
 }
 
 // async function addShortlink(shortUrl, longUrl) {

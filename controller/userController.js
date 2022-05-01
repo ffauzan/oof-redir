@@ -88,6 +88,82 @@ async function registerUser(req, res) {
     })
 }
 
+
+async function loginUser(req, res) {
+    // Basic check
+    const { username, password } = req.body
+
+    if (!password || !username) {
+        return res.json({
+            status: 0,
+            message: 'mana username & passwordnyaaaaaaaa'
+        })
+    }
+
+    if (password.length < 6) {
+        return res.json({
+            status: 0,
+            message: 'password minimum length is 6'
+        })
+    }
+
+    if (username.length < 4) {
+        return res.json({
+            status: 0,
+            message: 'username minimum length is 4'
+        })
+    }
+
+    // Check if username & password valid
+    User.findOne({username: username}, 'username password')
+    .then(async (user) => {
+        if (user) {
+            const isAuthenticated = await bcrypt.compare(password, user.password)
+            
+            // Auth success
+            if (isAuthenticated) {
+                const token = await JWT.sign(
+                    {
+                        username: username
+                    },
+                    jwtSecret,
+                    {
+                        expiresIn: '7d'
+                    }
+                )
+
+                return res.json({
+                    status: 1,
+                    message: '',
+                    data: {
+                        token: token
+                    }
+                })
+            } else {
+                return res.json({
+                    status: 0,
+                    message: 'unauthorized'
+                })
+            }
+        } else {
+            // Auth fail
+            return res.json({
+                status: 0,
+                message: 'unauthorized'
+            })
+        }
+    })
+    .catch((err) => {
+        return res.json({
+            status: 0,
+            message: err.message
+        })
+    })
+}
+
+
+
 module.exports = {
     registerUser,
+    loginUser,
 }
