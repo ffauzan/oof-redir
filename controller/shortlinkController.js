@@ -11,7 +11,13 @@ async function shortlinkRedir(req, res) {
 
 async function addShortlink(req, res) {
     const { shortUrl, longUrl } = req.body
+    let username = req.body.username
     console.log(shortUrl)
+
+    if (!username) {
+        console.log('No owner identity')
+        username = ''
+    }
 
     // Basic Checking
     if (shortUrl && longUrl) {
@@ -31,7 +37,8 @@ async function addShortlink(req, res) {
                     // Create
                     const newShortLink = new Shortlink({
                         shortUrl: shortUrl,
-                        longUrl: longUrl
+                        longUrl: longUrl,
+                        owner: username
                     }) 
                     
                     // Try to save to db
@@ -61,6 +68,13 @@ async function addShortlink(req, res) {
     }
 }
 
+
+async function editShortLink(req, res) {
+    const { shortUrl, longUrl, username } = req.body
+
+    
+}
+
 // async function addShortlink(shortUrl, longUrl) {
 //     const newShortLink = new Shortlink({
 //         shortUrl: shortUrl,
@@ -79,4 +93,5 @@ async function addShortlink(req, res) {
 module.exports = {
     addShortlink,
     shortlinkRedir,
+    editShortLink,
 }
