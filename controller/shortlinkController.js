@@ -3,18 +3,9 @@ const dotenv = require('dotenv')
 
 const Shortlink = require('../model/shortlinkModel')
 
-dotenv.config()
-
-const MONGODB_URL = process.env.MONGODB_URL
-
-mongoose.connect(MONGODB_URL, () => {
-    console.log('connected')
-}, (err) => {
-    console.log(err.message)
-})
-
 async function shortlinkRedir(req, res) {
-    const url = ''
+    const url = req.body.realUrl
+    console.log(`Real url is ${url}`)
     return res.redirect(url)
 }
 
@@ -87,4 +78,5 @@ async function addShortlink(req, res) {
 
 module.exports = {
     addShortlink,
+    shortlinkRedir,
 }
