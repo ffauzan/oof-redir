@@ -33,23 +33,11 @@ app.use('/api/shortlink', shortlinkRoute)
 
 
 app.get('/', (req, res) => {
-    res.send('Halo Duniaaaaaaa.........')
+    res.send('There is no Frontend yet, ehe')
 })
 
-// app.get('/:url', translateUrl, (req, res) => {
-//     const realUrl = req.body.realUrl
-//     const ip = req.socket.remoteAddress
-//     console.log(`Redirecting ${ip} to ${realUrl}`)
-//     res.redirect(realUrl)
-// })
 
 app.get('/:url', translateUrl, shortlinkRedir)
-
-app.get('/f', (req, res) => {
-    res.redirect('http://google.com')
-    let ip = req.socket.remoteAddress
-    console.log(ip)
-})
 
 // Run this thing
 app.listen(PORT, () => {
